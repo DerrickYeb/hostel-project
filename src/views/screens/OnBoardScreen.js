@@ -52,7 +52,7 @@ const OnBoardScreen = ({navigation}) => {
           paddingBottom: 40,
         }}>
         {/* button */}
-        <Pressable onPress={() => navigation.navigate('HomeScreen')}>
+        <Pressable onPress={() => navigation.navigate('LoginScreen')}>
           <View style={style.btn}>
             <Text style={{color: 'white'}}>Get Started</Text>
           </View>

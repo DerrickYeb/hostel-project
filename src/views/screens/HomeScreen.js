@@ -15,11 +15,18 @@ import {
 import COLORS from '../../consts/colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 const {width} = Dimensions.get('screen');
-import houses from '../../consts/houses';
-const HomeScreen = ({navigation}) => {
+import {KnustHostels} from '../../consts/houses';
+import { useNavigation } from '@react-navigation/native';
+const HomeScreen = ({navigate,route}) => {
+  const navigation = useNavigation();
+  
+  const selectedSchool = route.params;
+
+  console.log(selectedSchool);
+
   const optionsList = [
     {title: 'Off-Campus Hostels', img: require('../../assets/house1.jpg')},
-    {title: 'Campus hostels', img: require('../../assets/house2.jpg')},
+    {title: 'All Campuses hostels', img: require('../../assets/house2.jpg')},
   ];
   const categoryList = ['Popular', 'Recommended', 'Nearest'];
 
@@ -124,13 +131,13 @@ const HomeScreen = ({navigation}) => {
       <View style={style.header}>
         <View>
           <Text style={{color: COLORS.grey}}>Location</Text>
-          <Text style={{color: COLORS.dark, fontSize: 20, fontWeight: 'bold'}}>
-            kumasi
+          <Text onPress={() => navigation.navigate('ChooseSchoolScreen')} style={{color: COLORS.dark, fontSize: 20, fontWeight: 'bold'}}>
+            {selectedSchool.selectedSchool.School}
           </Text>
         </View>
         <Image
           style={style.profileImage}
-          source={require('../../assets/person.jpg')}
+          source={{uri:selectedSchool.selectedSchool.schoolImage}}
         />
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -143,7 +150,7 @@ const HomeScreen = ({navigation}) => {
           }}>
           <View style={style.searchInputContainer}>
             <Icon name="search" color={COLORS.grey} size={25} />
-            <TextInput placeholder="Search address, city, location" />
+            <TextInput placeholder="Search" />
           </View>
 
           <View style={style.sortBtn}>
@@ -163,7 +170,7 @@ const HomeScreen = ({navigation}) => {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{paddingLeft: 20, paddingVertical: 20}}
           horizontal
-          data={houses}
+          data={selectedSchool.selectedSchool.hostels}
           renderItem={({item}) => <Card house={item} />}
         />
       </ScrollView>
