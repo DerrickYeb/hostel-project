@@ -9,6 +9,8 @@ import Login from './src/views/screens/Login';
 import Registration from './src/views/screens/Registration';
 import ChooseSchool from './src/views/screens/ChooseSchool';
 import { NativeBaseProvider } from 'native-base';
+import HistoryBooks from './src/views/screens/HistoryBooks';
+import Router from './src/index.routes';
 
 
 
@@ -19,14 +21,16 @@ export default function App() {
   return (
     <NativeBaseProvider>
       <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {/* <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="OnBoardScreen" component={OnBoardScreen} />
           <Stack.Screen name="LoginScreen" component={Login} />
           <Stack.Screen name="RegistrationScreen" component={Registration} />
           <Stack.Screen name="ChooseSchoolScreen" component={ChooseSchool} />
           <Stack.Screen name="HomeScreen" component={HomeScreen} />
           <Stack.Screen name="DetailsScreen" component={DetailsScreen} />
-        </Stack.Navigator>
+          <Stack.Screen name="RecentBookedScreen" component={HistoryBooks} />
+        </Stack.Navigator> */}
+        <Router/>
       </NavigationContainer>
     </NativeBaseProvider>
 

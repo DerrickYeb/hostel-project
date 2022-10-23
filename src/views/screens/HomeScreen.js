@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -14,19 +14,35 @@ import {
 } from 'react-native';
 import COLORS from '../../consts/colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-const {width} = Dimensions.get('screen');
-import {KnustHostels} from '../../consts/houses';
+const { width } = Dimensions.get('screen');
+import { KnustHostels } from '../../consts/houses';
 import { useNavigation } from '@react-navigation/native';
-const HomeScreen = ({navigate,route}) => {
+import { Button, FormControl, HamburgerIcon, Input, Menu, Modal } from 'native-base';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+const HomeScreen = ({ navigate, route }) => {
   const navigation = useNavigation();
-  
-  const selectedSchool = route.params;
+  const[selectedSchool,setSelectedSchool] = useState();
 
-  console.log(selectedSchool);
+  // const selectedSchool = route.params;
+
+
+  const getSelectedSchool = async() =>{
+    const jsonValue = await AsyncStorage.getItem("@selected_School");
+    console.log(JSON.parse(jsonValue))
+    setSelectedSchool(JSON.parse(jsonValue));
+    return jsonValue !=null ?  JSON.parse(jsonValue) : null;
+  }
+
+  useEffect(() =>{
+    getSelectedSchool()
+  },[])
+
+  console.log("School Async",selectedSchool);
+
 
   const optionsList = [
-    {title: 'Off-Campus Hostels', img: require('../../assets/house1.jpg')},
-    {title: 'All Campuses hostels', img: require('../../assets/house2.jpg')},
+    { title: 'Off-Campus Hostels', img: require('../../assets/house1.jpg') },
+    { title: 'All Campuses hostels', img: require('../../assets/house2.jpg') },
   ];
   const categoryList = ['Popular', 'Recommended', 'Nearest'];
 
@@ -60,7 +76,7 @@ const HomeScreen = ({navigate,route}) => {
             <Image source={option.img} style={style.optionsCardImage} />
 
             {/* Option title */}
-            <Text style={{marginTop: 10, fontSize: 12, fontWeight: 'bold'}}>
+            <Text style={{ marginTop: 10, fontSize: 12, fontWeight: 'bold' }}>
               {option.title}
             </Text>
           </View>
@@ -68,15 +84,17 @@ const HomeScreen = ({navigate,route}) => {
       </View>
     );
   };
-  const Card = ({house}) => {
+  const Card = ({ house }) => {
+    
     return (
+      <>
       <Pressable
         activeOpacity={0.8}
         onPress={() => navigation.navigate('DetailsScreen', house)}>
         <View style={style.card}>
           {/* House image */}
           <Image source={house.image} style={style.cardImage} />
-          <View style={{marginTop: 10}}>
+          <View style={{ marginTop: 10 }}>
             {/* Title and price container */}
             <View
               style={{
@@ -84,23 +102,23 @@ const HomeScreen = ({navigate,route}) => {
                 justifyContent: 'space-between',
                 marginTop: 10,
               }}>
-              <Text style={{fontSize: 16, fontWeight: 'bold'}}>
+              <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
                 {house.title}
               </Text>
               <Text
-                style={{fontWeight: 'bold', color: COLORS.blue, fontSize: 16}}>
+                style={{ fontWeight: 'bold', color: COLORS.blue, fontSize: 16 }}>
                 $1,500
               </Text>
             </View>
 
             {/* Location text */}
 
-            <Text style={{color: COLORS.grey, fontSize: 14, marginTop: 5}}>
+            <Text style={{ color: COLORS.grey, fontSize: 14, marginTop: 5 }}>
               {house.location}
             </Text>
 
             {/* Facilities container */}
-            <View style={{marginTop: 10, flexDirection: 'row'}}>
+            <View style={{ marginTop: 10, flexDirection: 'row' }}>
               <View style={style.facility}>
                 <Icon name="hotel" size={18} />
                 <Text style={style.facilityText}>2</Text>
@@ -117,10 +135,11 @@ const HomeScreen = ({navigate,route}) => {
           </View>
         </View>
       </Pressable>
+      </>
     );
   };
   return (
-    <SafeAreaView style={{backgroundColor: COLORS.white, flex: 1}}>
+    <SafeAreaView style={{ backgroundColor: COLORS.white, flex: 1 }}>
       {/* Customise status bar */}
       <StatusBar
         translucent={false}
@@ -130,14 +149,14 @@ const HomeScreen = ({navigate,route}) => {
       {/* Header container */}
       <View style={style.header}>
         <View>
-          <Text style={{color: COLORS.grey}}>Location</Text>
-          <Text onPress={() => navigation.navigate('ChooseSchoolScreen')} style={{color: COLORS.dark, fontSize: 20, fontWeight: 'bold'}}>
-            {selectedSchool.selectedSchool.School}
+          <Text style={{ color: COLORS.grey }}>Location</Text>
+          <Text onPress={() => navigation.navigate('ChooseSchoolScreen')} style={{ color: COLORS.dark, fontSize: 20, fontWeight: 'bold' }}>
+            {selectedSchool?.School}
           </Text>
         </View>
         <Image
           style={style.profileImage}
-          source={{uri:selectedSchool.selectedSchool.schoolImage}}
+          source={{ uri: selectedSchool?.schoolImage }}
         />
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -154,7 +173,15 @@ const HomeScreen = ({navigate,route}) => {
           </View>
 
           <View style={style.sortBtn}>
-            <Icon name="tune" color={COLORS.white} size={25} />
+            <Menu w="190" trigger={triggerProps => {
+              return <Pressable accessibilityLabel="More options menu" {...triggerProps}>
+                <HamburgerIcon />
+              </Pressable>;
+            }}>
+              <Menu.Item onPress={()=> navigation.navigate("RecentBookedScreen")}>Revently Booked</Menu.Item>
+              <Menu.Item>Profile</Menu.Item>
+              <Menu.Item>Settings</Menu.Item>
+            </Menu>
           </View>
         </View>
 
@@ -168,10 +195,10 @@ const HomeScreen = ({navigate,route}) => {
         <FlatList
           snapToInterval={width - 20}
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{paddingLeft: 20, paddingVertical: 20}}
+          contentContainerStyle={{ paddingLeft: 20, paddingVertical: 20 }}
           horizontal
-          data={selectedSchool.selectedSchool.hostels}
-          renderItem={({item}) => <Card house={item} />}
+          data={KnustHostels}
+          renderItem={({ item }) => <Card house={item} />}
         />
       </ScrollView>
     </SafeAreaView>
@@ -260,7 +287,7 @@ const style = StyleSheet.create({
     height: 120,
     borderRadius: 15,
   },
-  facility: {flexDirection: 'row', marginRight: 15},
-  facilityText: {marginLeft: 5, color: COLORS.grey},
+  facility: { flexDirection: 'row', marginRight: 15 },
+  facilityText: { marginLeft: 5, color: COLORS.grey },
 });
 export default HomeScreen;
