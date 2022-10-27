@@ -1,14 +1,26 @@
 import { Pressable, SafeAreaView, StyleSheet, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Avatar, Badge, Box, Button, Center, Divider, HStack, Modal, ScrollView, Stack, Text, VStack } from 'native-base'
 import Icon from 'react-native-vector-icons/AntDesign'
 import { AntDesign, Entypo, Feather, FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 
 const ProfileScreen = () => {
     const navigation = useNavigation()
+    const [isCurrentUser,setCurrentUSer] = useState();
     const [showModal, setShowModal] = useState(false);
+
+    const getCurrentUser = async() =>{
+        const currentUser = await AsyncStorage.getItem("@current_user");
+        setCurrentUSer(JSON.parse(currentUser));
+        return currentUser && JSON.parse(currentUser);
+    }
+
+    useEffect(()=>{
+        getCurrentUser()
+    })
 
     return (
         <ScrollView background={'white'}>
@@ -22,8 +34,8 @@ const ProfileScreen = () => {
                                     <Badge endIcon={<Icon name='edit' />} />
                                 </Center>
                             </Stack>
-                            <Text fontSize={24} fontWeight='extraBlack'>Nkauh Bismark</Text>
-                            <Text fontSize={12} fontWeight='extraBlack'>nkuah@gmail.com</Text>
+                            <Text fontSize={24} fontWeight='extraBlack'>{`${isCurrentUser?.first_name} ${isCurrentUser?.last_name}`}</Text>
+                            <Text fontSize={12} fontWeight='extraBlack'>{isCurrentUser?.username}</Text>
                         </Center>
                     </VStack>
                     <Divider />

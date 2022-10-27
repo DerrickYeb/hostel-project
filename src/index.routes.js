@@ -11,6 +11,8 @@ import Login from './views/screens/Login';
 import OnBoardScreen from './views/screens/OnBoardScreen';
 import EditProfile from './views/screens/EditProfile';
 import UpdateSchool from './views/screens/UpdateSchool';
+import AllCampusScreen from './views/screens/AllCampusScreen';
+import OffCampusHostel from './views/screens/OffCampusHostel';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -49,6 +51,8 @@ const Router = () => {
 
         <Stack.Group>
         <Stack.Screen name="Main" component={BottomTabBars} />
+        <Stack.Screen name="AllCampusScreen" component={AllCampusScreen} />
+        <Stack.Screen name="OffCampusHostel" component={OffCampusHostel}/>
         <Stack.Screen name="DetailsScreen" component={DetailsScreen} />
         <Stack.Screen name="RecentBookedScreen" component={HistoryBooks} />
         <Stack.Screen name="EditProfileScreen" component={EditProfile} />

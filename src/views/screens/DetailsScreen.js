@@ -65,9 +65,9 @@ const DetailsScreen = ({ navigation, route }) => {
           </ImageBackground>
 
           {/* Virtual Tag View */}
-          <View style={style.virtualTag}>
+          {/* <View style={style.virtualTag}>
             <Text style={{ color: COLORS.white }}>Virtual tour</Text>
-          </View>
+          </View> */}
         </View>
 
         <View style={style.detailsContainer}>
@@ -80,7 +80,7 @@ const DetailsScreen = ({ navigation, route }) => {
               <View style={style.ratingTag}>
                 <Text style={{ color: COLORS.white }}>4.8</Text>
               </View>
-              <Text style={{ fontSize: 13, marginLeft: 5 }}>155 ratings</Text>
+              {/* <Text style={{ fontSize: 13, marginLeft: 5 }}>155 ratings</Text> */}
             </View>
           </View>
 
@@ -90,7 +90,7 @@ const DetailsScreen = ({ navigation, route }) => {
           </Text>
 
           {/* Facilities container */}
-          <View style={{ flexDirection: 'row', marginTop: 20 }}>
+          {/* <View style={{ flexDirection: 'row', marginTop: 20 }}>
             <View style={style.facility}>
               <Icon name="hotel" size={18} />
               <Text style={style.facilityText}>2</Text>
@@ -103,27 +103,27 @@ const DetailsScreen = ({ navigation, route }) => {
               <Icon name="aspect-ratio" size={18} />
               <Text style={style.facilityText}>100m area</Text>
             </View>
-          </View>
+          </View> */}
           <Text style={{ marginTop: 20, color: COLORS.grey }}>
             {house.details}
           </Text>
 
           {/* Interior list */}
-          <FlatList
+          {/* <FlatList
             contentContainerStyle={{ marginTop: 20 }}
             horizontal
             showsHorizontalScrollIndicator={false}
             keyExtractor={(_, key) => key.toString()}
             data={house.interiors}
             renderItem={({ item }) => <InteriorCard interior={item} />}
-          />
+          /> */}
 
           {/* footer container */}
           <View style={style.footer}>
             <View>
               <Text
                 style={{ color: COLORS.blue, fontWeight: 'bold', fontSize: 18 }}>
-                $1,500
+                {house?.price}GHS
               </Text>
               <Text
                 style={{ fontSize: 12, color: COLORS.grey, fontWeight: 'bold' }}>

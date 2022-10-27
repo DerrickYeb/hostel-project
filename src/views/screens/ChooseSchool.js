@@ -11,28 +11,28 @@ const data = [
     School:'KNUST',
     schoolImage:'https://res.cloudinary.com/derrydev/image/upload/v1666023661/Images/knust_ctcdni.png',
     location:'Kumasi',
-    hostels:KnustHostels
+    hostels:"KnustHostels"
   },
   {
     id:2,
     School:'UG',
     schoolImage:'https://res.cloudinary.com/derrydev/image/upload/v1666023665/Images/UG_dbjxkq.png',
     location:'Accra',
-    hostels:UGHostels
+    hostels:"UGHostels"
   },
   {
     id:3,
     School:'UCC',
     schoolImage:'https://res.cloudinary.com/derrydev/image/upload/v1666023663/Images/ucclogo_c5zkfl.png',
     location:'Cape Coast',
-    hostels:UCCHostels
+    hostels:"UCCHostels"
   },
   {
     id:4,
     School:'UPSA',
     schoolImage:'https://res.cloudinary.com/derrydev/image/upload/v1666023661/Images/UPSA_xd8iox.jpg',
     location:'Accra-Madina',
-    hostels:UPSAHostels
+    hostels:"UPSAHostels"
   }
 ]
 

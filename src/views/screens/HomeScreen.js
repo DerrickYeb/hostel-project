@@ -14,35 +14,62 @@ import {
 } from 'react-native';
 import COLORS from '../../consts/colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-const { width } = Dimensions.get('screen');
-import { KnustHostels } from '../../consts/houses';
+import { KnustHostels, UCCHostels, UGHostels, UPSAHostels } from '../../consts/houses';
 import { useNavigation } from '@react-navigation/native';
 import { Button, FormControl, HamburgerIcon, Input, Menu, Modal } from 'native-base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const HomeScreen = ({ navigate, route }) => {
+import AnimatedLottieView from 'lottie-react-native';
+
+
+const { width } = Dimensions.get('screen');
+
+const HomeScreen = () => {
   const navigation = useNavigation();
-  const[selectedSchool,setSelectedSchool] = useState();
+  const [selectedSchool, setSelectedSchool] = useState();
+  const [selectedSchoolHostel, setSelectedSchoolHostel] = useState([]);
 
   // const selectedSchool = route.params;
 
 
-  const getSelectedSchool = async() =>{
-    const jsonValue = await AsyncStorage.getItem("@selected_School");
+  const getSelectedSchool = async () => {
+    const jsonValue = await AsyncStorage.getItem("@school_Selected");
     console.log(JSON.parse(jsonValue))
+    const schoolName = JSON.parse(jsonValue)
     setSelectedSchool(JSON.parse(jsonValue));
-    return jsonValue !=null ?  JSON.parse(jsonValue) : null;
+    switch (schoolName.School) {
+      case "KNUST":
+        return setSelectedSchoolHostel(KnustHostels);
+      case "UG": return setSelectedSchoolHostel(UGHostels);
+      case "UPSA": return setSelectedSchoolHostel(UPSAHostels);
+      case "UCC": return setSelectedSchoolHostel(UCCHostels);
+      default:
+        break;
+    }
+    console.log('Hostel Selected', selectedSchoolHostel)
+    return jsonValue != null ? JSON.parse(jsonValue) : null;
   }
 
-  useEffect(() =>{
+  useEffect(() => {
     getSelectedSchool()
-  },[])
+    // switch (selectedSchool?.School) {
+    //   case "KNUST":
+    //     return setSelectedSchoolHostel(KnustHostels);
+    //   case "UG": return setSelectedSchoolHostel(UGHostels);
+    //   case "UPSA": return setSelectedSchoolHostel(UPSAHostels);
+    //   case "UCC": return setSelectedSchoolHostel(UCCHostels);
+    //   default:
+    //     break;
+    // }
+  }, [])
 
-  console.log("School Async",selectedSchool);
+
+
+  console.log("School Async", selectedSchool);
 
 
   const optionsList = [
-    { title: 'Off-Campus Hostels', img: require('../../assets/house1.jpg') },
-    { title: 'All Campuses hostels', img: require('../../assets/house2.jpg') },
+    { title: 'Off-Campus Hostels', img: require('../../assets/house1.jpg'), navigatiionUrl: "OffCampusHostel" },
+    { title: 'All Campuses hostels', img: require('../../assets/house2.jpg'), navigatiionUrl: "AllCampusScreen" },
   ];
   const categoryList = ['Popular', 'Recommended', 'Nearest'];
 
@@ -71,70 +98,72 @@ const HomeScreen = ({ navigate, route }) => {
     return (
       <View style={style.optionListsContainer}>
         {optionsList.map((option, index) => (
-          <View style={style.optionsCard} key={index}>
-            {/* House image */}
-            <Image source={option.img} style={style.optionsCardImage} />
+          <Pressable key={index} onPress={() => navigation.navigate(option.navigatiionUrl)}>
+            <View style={style.optionsCard} >
+              {/* House image */}
+              <Image source={option.img} style={style.optionsCardImage} />
 
-            {/* Option title */}
-            <Text style={{ marginTop: 10, fontSize: 12, fontWeight: 'bold' }}>
-              {option.title}
-            </Text>
-          </View>
+              {/* Option title */}
+              <Text style={{ marginTop: 10, fontSize: 12, fontWeight: 'bold' }}>
+                {option.title}
+              </Text>
+            </View>
+          </Pressable>
         ))}
       </View>
     );
   };
   const Card = ({ house }) => {
-    
+    console.log("House", house);
     return (
       <>
-      <Pressable
-        activeOpacity={0.8}
-        onPress={() => navigation.navigate('DetailsScreen', house)}>
-        <View style={style.card}>
-          {/* House image */}
-          <Image source={house.image} style={style.cardImage} />
-          <View style={{ marginTop: 10 }}>
-            {/* Title and price container */}
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginTop: 10,
-              }}>
-              <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
-                {house.title}
-              </Text>
-              <Text
-                style={{ fontWeight: 'bold', color: COLORS.blue, fontSize: 16 }}>
-                $1,500
-              </Text>
-            </View>
-
-            {/* Location text */}
-
-            <Text style={{ color: COLORS.grey, fontSize: 14, marginTop: 5 }}>
-              {house.location}
-            </Text>
-
-            {/* Facilities container */}
-            <View style={{ marginTop: 10, flexDirection: 'row' }}>
-              <View style={style.facility}>
-                <Icon name="hotel" size={18} />
-                <Text style={style.facilityText}>2</Text>
+        <Pressable
+          activeOpacity={0.8}
+          onPress={() => navigation.navigate('DetailsScreen', house)}>
+          <View style={style.card}>
+            {/* House image */}
+            <Image source={house.image} style={style.cardImage} />
+            <View style={{ marginTop: 10 }}>
+              {/* Title and price container */}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginTop: 10,
+                }}>
+                <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
+                  {house.title}
+                </Text>
+                <Text
+                  style={{ fontWeight: 'bold', color: COLORS.blue, fontSize: 16 }}>
+                  {house.price}GHS
+                </Text>
               </View>
-              <View style={style.facility}>
-                <Icon name="bathtub" size={18} />
-                <Text style={style.facilityText}>2</Text>
-              </View>
-              <View style={style.facility}>
-                <Icon name="aspect-ratio" size={18} />
-                <Text style={style.facilityText}>100m</Text>
+
+              {/* Location text */}
+
+              <Text style={{ color: COLORS.grey, fontSize: 14, marginTop: 5 }}>
+                {house.location}
+              </Text>
+
+              {/* Facilities container */}
+              <View style={{ marginTop: 10, flexDirection: 'row' }}>
+                <View style={style.facility}>
+                  <Icon name="hotel" size={18} />
+                  <Text style={style.facilityText}>2</Text>
+                </View>
+                <View style={style.facility}>
+                  <Icon name="bathtub" size={18} />
+                  <Text style={style.facilityText}>2</Text>
+                </View>
+                <View style={style.facility}>
+                  <Icon name="aspect-ratio" size={18} />
+                  <Text style={style.facilityText}>100m</Text>
+                </View>
               </View>
             </View>
           </View>
-        </View>
-      </Pressable>
+        </Pressable>
       </>
     );
   };
@@ -178,7 +207,7 @@ const HomeScreen = ({ navigate, route }) => {
                 <HamburgerIcon />
               </Pressable>;
             }}>
-              <Menu.Item onPress={()=> navigation.navigate("RecentBookedScreen")}>Revently Booked</Menu.Item>
+              <Menu.Item onPress={() => navigation.navigate("RecentBookedScreen")}>Revently Booked</Menu.Item>
               <Menu.Item>Profile</Menu.Item>
               <Menu.Item>Settings</Menu.Item>
             </Menu>
@@ -191,15 +220,27 @@ const HomeScreen = ({ navigate, route }) => {
         {/* Render categories */}
         <ListCategories />
 
-        {/* Render Card */}
-        <FlatList
-          snapToInterval={width - 20}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingLeft: 20, paddingVertical: 20 }}
-          horizontal
-          data={KnustHostels}
-          renderItem={({ item }) => <Card house={item} />}
-        />
+        {
+          selectedSchoolHostel.length > 0 ?  (
+            <FlatList
+              snapToInterval={width - 20}
+              // showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingLeft: 20, paddingVertical: 20 }}
+              // horizontal
+              data={selectedSchoolHostel}
+              renderItem={({ item }) => <Card house={item} />} />
+          ) : <View style={style.animationContainer}>
+            <AnimatedLottieView
+              autoPlay
+              style={{
+                width: 500,
+                height: 500,
+                backgroundColor: COLORS.tranparent,
+              }}
+              source={require('../../assets/animations/loadingLogo.json')}
+            />
+          </View>
+        }
       </ScrollView>
     </SafeAreaView>
   );
@@ -280,6 +321,7 @@ const style = StyleSheet.create({
     width: width - 40,
     marginRight: 20,
     padding: 15,
+    margin: 5,
     borderRadius: 20,
   },
   cardImage: {
@@ -289,5 +331,11 @@ const style = StyleSheet.create({
   },
   facility: { flexDirection: 'row', marginRight: 15 },
   facilityText: { marginLeft: 5, color: COLORS.grey },
+  animationContainer: {
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+  },
 });
 export default HomeScreen;
