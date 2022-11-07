@@ -44,10 +44,10 @@ const HistoryBooks = () => {
     const getData = async () => {
         const jsonValue = await AsyncStorage.getItem('@bookedHostel')
         allBookedData.push(JSON.parse(jsonValue))
-        setBookedData(allBookedData)
+        console.log(JSON.parse(jsonValue));
+        setBookedData(JSON.parse(jsonValue))
         return jsonValue ? JSON.parse(jsonValue) : null;
     }
-    //  console.log(JSON.parse(bookedData));
     useEffect(() => {
         getData()
     }, [])
@@ -61,6 +61,7 @@ const HistoryBooks = () => {
                 padding: 10,
             }} fontSize={18} fontWeight="extrabold">Recently Booked Hostels</Text>
 
+            <BookedItem data={bookedData} />
             {/* <Button.Group px={2} safeArea={1}>
                 <Pressable>
                     <Button  color={'black'} style={styles.pendingStyle}>Pending</Button>
@@ -68,14 +69,14 @@ const HistoryBooks = () => {
                 <Button  style={styles.pendingStyle}>Completed</Button>
                 <Button  style={styles.pendingStyle}>Cancelled</Button>
             </Button.Group> */}
-            <FlatList
+            {/* <FlatList
                 keyExtractor={(club) => '_club'}
                 numColumns={1}
                 estimatedItemSize={100}
                 renderItem={(data) => (
                     <BookedItem data={data.item} />
                 )}
-                data={bookedData} />
+                data={bookedData} /> */}
         </SafeAreaView>
     )
 }

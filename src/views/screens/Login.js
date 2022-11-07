@@ -1,12 +1,44 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Button, Center, Divider, FormControl, Heading, HStack, Input, Stack, useNativeBase } from 'native-base'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar'
 import { Link, useNavigation } from '@react-navigation/native'
+import { Controller, useForm } from 'react-hook-form'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const Login = () => {
   const navigate = useNavigation()
+  const { control, handleSubmit, formState: { errors } } = useForm()
+  const [user, setUser] = useState([]);
+const[isLoadibg,setIsLoading]=useState(false)
+
+  const getUserData = async () => {
+    const jsonValue = await AsyncStorage.getItem('@user')
+    console.log(JSON.parse(jsonValue));
+    setUser(JSON.parse(jsonValue))
+    return jsonValue ? JSON.parse(jsonValue) : null;
+  }
+
+  const adduser = async(data) =>{
+setIsLoading(true)
+    console.log(data)
+    if(data.emaiil === user.emaiil && data.password === user.password){
+      alert("Welcome back " + user.fullName)
+      setIsLoading(false)
+      navigate.navigate(user.userType === 'admin' ? "AdminScreen" : 'ChooseSchoolScreen')
+    }
+    else{
+      alert("User not found")
+      setIsLoading(false)
+    }
+  }
+   
+
+  useEffect(() => {
+    getUserData()
+  }, [])
+
   return (
     <SafeAreaView>
       <StatusBar
@@ -24,21 +56,49 @@ const Login = () => {
         </View>
         <Stack space={4}>
           <FormControl isRequired>
-            <FormControl.Label color={'#000'} fontWeight={16}>Userame or Email</FormControl.Label>
-            <Input borderColor={'#000'} backgroundColor={'#fff'} placeholder="Enter your email address" variant='filled' isRequired keyboardType='email-address' />
-          </FormControl>
+            <FormControl.Label color={'#000'} fontWeight={16}>Username or Email</FormControl.Label>
+            <Controller
+              control={control}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  borderColor={'#000'}
+                  backgroundColor={{ backgroundColor: '#fff' }}
+                  placeholder="Enter your email address"
+                  variant='filled'
+                  isRequired
+                  keyboardType='default' />
+              )}
+              name="email" />
+                      </FormControl>
           <FormControl isRequired>
             <FormControl.Label color={'#000'} fontWeight={16}>Password</FormControl.Label>
-            <Input type='password' fontSize={16} borderColor={'#000'} backgroundColor={{ backgroundColor: '#fff' }} placeholder="password" variant='filled' isRequired keyboardType='default' />
+            <Controller
+              control={control}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  borderColor={'#000'}
+                  backgroundColor={{ backgroundColor: '#fff' }}
+                  placeholder="Enter your password"
+                  variant='filled'
+                  isRequired
+                  keyboardType='default' />
+              )}
+              name="password" />
           </FormControl>
         </Stack>
         <Button
           colorScheme="primary"
           bg={"#000"}
           my={10}
-          onPress={() => {
-            navigate.navigate('ChooseSchoolScreen')
-          }}
+          isLoading={isLoadibg}
+          isLoadingText="Loading... Please wait..."
+          onPress={handleSubmit(adduser)}
 
         >
           Login

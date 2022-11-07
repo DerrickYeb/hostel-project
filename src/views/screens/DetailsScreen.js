@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 import { Button, CheckIcon, FormControl, Input, Modal, Select, WarningOutlineIcon } from 'native-base';
 import React from 'react';
 import {
@@ -19,6 +20,7 @@ import COLORS from '../../consts/colors';
 const { width } = Dimensions.get('screen');
 const DetailsScreen = ({ navigation, route }) => {
   const house = route.params;
+  const navigate = useNavigation()
 
   const [modalVisible, setModalVisible] = React.useState(false);
   const initialRef = React.useRef(null);
@@ -31,6 +33,7 @@ const DetailsScreen = ({ navigation, route }) => {
       await AsyncStorage.setItem('@bookedHostel', JSON.stringify(house));
       alert('Hostel Booked successfully')
       setModalVisible(false)
+      navigate.navigate('CheckoutScreen')
     } catch (error) {
       alert(error.message);
     }

@@ -5,7 +5,7 @@ import COLORS from '../consts/colors'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import AnimatedLottieView from 'lottie-react-native'
 
-const BookedItem = ({ data }) => {
+const BookedItem = ({ data,user }) => {
     const toast = useToast()
     const [modalVisible, setModalVisible] = useState(false)
     const[dataFetched,setFetchedData] = useState({})
@@ -17,7 +17,9 @@ const BookedItem = ({ data }) => {
     }
 
     const removeBookedItem = async () => {
-        await AsyncStorage.removeItem('@bookedHostel')
+        await AsyncStorage.removeItem('@bookedHostel').then((itm) =>(
+            console.log(itm)
+        ))
         setModalVisible(false);
         toast.show({
             title: 'Remove Booked Hostel',
@@ -31,7 +33,7 @@ const BookedItem = ({ data }) => {
     return (
         <>
             {
-                data?.length > 0 ? (
+                data ? (
                     <Pressable>
                         <Box px={2}>
                             <HStack py={2}>

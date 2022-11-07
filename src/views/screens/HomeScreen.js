@@ -51,15 +51,6 @@ const HomeScreen = () => {
 
   useEffect(() => {
     getSelectedSchool()
-    // switch (selectedSchool?.School) {
-    //   case "KNUST":
-    //     return setSelectedSchoolHostel(KnustHostels);
-    //   case "UG": return setSelectedSchoolHostel(UGHostels);
-    //   case "UPSA": return setSelectedSchoolHostel(UPSAHostels);
-    //   case "UCC": return setSelectedSchoolHostel(UCCHostels);
-    //   default:
-    //     break;
-    // }
   }, [])
 
 

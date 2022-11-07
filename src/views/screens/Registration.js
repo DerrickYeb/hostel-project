@@ -1,10 +1,37 @@
 import { SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { Box, Button, Center, Divider, FormControl, Heading, HStack, Input, KeyboardAvoidingView, ScrollView, Select, Stack } from 'native-base'
 import { Link, useNavigation } from '@react-navigation/native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { Controller, useForm } from 'react-hook-form'
 
 const Registration = () => {
     const navigate = useNavigation()
+    const { control, handleSubmit, formState: { errors } } = useForm()
+
+
+    const [user,setUser] = useState({
+        fullName:'',
+        userType:'',
+        email:'',
+        phoneNumber:'',
+        password:'',
+
+    })
+
+    const adduser = async(data) =>{
+
+        console.log(data)
+        await AsyncStorage.setItem("@user", JSON.stringify(data)).then(()=>{
+            alert(`Welcome on board ${data.fullName}`)
+            navigate.navigate(data.userType === 'admin' ? "AdminScreen" : 'ChooseSchoolScreen')
+        }).catch((error)=>{
+            alert("an error occurred while creating an account. Try again later")
+            console.error(error);
+        })
+    }
+    console.log(user)
+
     return (
         <ScrollView>
             <SafeAreaView>
@@ -27,26 +54,91 @@ const Registration = () => {
                     <Stack space={4}>
                     <FormControl isRequired>
                             <FormControl.Label color={'#000'} fontWeight={16}>Full Name</FormControl.Label>
-                            <Input borderColor={'#000'} backgroundColor={{ backgroundColor: '#fff' }} placeholder="Enter your email address" variant='filled' isRequired keyboardType='email-address' />
+                           <Controller 
+                           control={control}
+                           render={({field:{onChange,onBlur,value}})=>(
+                            <Input 
+                            value={value}
+                            onChangeText={onChange}
+                            onBlur={onBlur}
+                             borderColor={'#000'} 
+                            backgroundColor={{ backgroundColor: '#fff' }} 
+                            placeholder="Enter your name" 
+                            variant='filled' 
+                            isRequired 
+                            keyboardType='default' />
+                           )}
+                           name="fullName"
+                           />
                         </FormControl>
                         <FormControl isRequired>
                             <FormControl.Label color={'#000'} fontWeight={16}>Email Address</FormControl.Label>
-                            <Input borderColor={'#000'} backgroundColor={{ backgroundColor: '#fff' }} placeholder="Enter your email address" variant='filled' isRequired keyboardType='email-address' />
+                            <Controller 
+                           control={control}
+                           render={({field:{onChange,onBlur,value}})=>(
+                            <Input 
+                            value={value}
+                            onChangeText={onChange}
+                            onBlur={onBlur}
+                             borderColor={'#000'} 
+                            backgroundColor={{ backgroundColor: '#fff' }} 
+                            placeholder="Enter your email address" 
+                            variant='filled' 
+                            isRequired 
+                            keyboardType='default' />
+                           )}
+                           name="email"/>
                         </FormControl>
                         <FormControl>
                             <FormControl.Label>Phone Number</FormControl.Label>
-                            <Input borderColor={'#000'} backgroundColor={{ backgroundColor: '#fff' }} placeholder="Enter your phone number" variant='filled' _focus={{backgroundColor:'#fff'}} keyboardType='phone-pad' />
+                            <Controller 
+                           control={control}
+                           render={({field:{onChange,onBlur,value}})=>(
+                            <Input 
+                            value={value}
+                            onChangeText={onChange}
+                            onBlur={onBlur}
+                             borderColor={'#000'} 
+                            backgroundColor={{ backgroundColor: '#fff' }} 
+                            placeholder="Enter your phone number" 
+                            variant='filled' 
+                            isRequired 
+                            keyboardType='phone-pad' />
+                           )}
+                           name="phoneNumber"/>
                         </FormControl>
                         <FormControl isRequired>
                             <FormControl.Label color={'#000'} fontWeight={16}>User Type</FormControl.Label>
-                            <Select borderColor={'#000'} backgroundColor={{ backgroundColor: '#fff' }}>
-                                <option>Student</option>
-                            </Select>
+                            <Controller
+                            control={control}
+                            render={({field:{onChange,onBlur,value}})=>(
+                                <Select placeholder='Choose user type' onValueChange={onChange} selectedValue={value} borderColor={'#000'} backgroundColor={{ backgroundColor: '#fff' }}>
+                                    <Select.Item value={'student'} label="Student"/>
+                                    <Select.Item value={'admin'} label="Land Lord"/>
+                                </Select>
+                            )} 
+                            name="userType"
+                            />
                         </FormControl>
                         {/* <Text>NB: Property owner will be verified</Text> */}
                         <FormControl isRequired>
                             <FormControl.Label>Password</FormControl.Label>
-                            <Input borderColor={'#000'} backgroundColor={{ backgroundColor: '#fff' }} placeholder="Password" type='password' _focus={{backgroundColor:'#fff'}} isRequired variant='filled' />
+                            <Controller 
+                           control={control}
+                           render={({field:{onChange,onBlur,value}})=>(
+                            <Input 
+                            value={value}
+                            onChangeText={onChange}
+                            onBlur={onBlur}
+                            type="password"
+                             borderColor={'#000'} 
+                            backgroundColor={{ backgroundColor: '#fff' }} 
+                            placeholder="Enter your password" 
+                            variant='filled' 
+                            isRequired 
+                            keyboardType='default' />
+                           )}
+                           name="password"/>
                         </FormControl>
                         <FormControl isRequired>
                             <FormControl.Label>Confirm Password</FormControl.Label>
@@ -57,9 +149,7 @@ const Registration = () => {
                     colorScheme="primary"
                     bg={"#000"}
                     my={10}
-                    onPress={() => {
-                        navigate.navigate('ChooseSchoolScreen')
-                    }}
+                    onPress={handleSubmit(adduser)}
 
                 >
                     Register
